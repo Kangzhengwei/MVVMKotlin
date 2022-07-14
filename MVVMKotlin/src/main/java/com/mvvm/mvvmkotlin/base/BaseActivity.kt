@@ -5,9 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import java.lang.reflect.ParameterizedType
 
 abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {
 
@@ -30,7 +27,7 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
     private fun initViewDataBinding(savedInstanceState: Bundle?) {
         binding = DataBindingUtil.setContentView(this, initContentView(savedInstanceState))
         viewModelId = initVariableId()
-        viewModel = createViewModel(initFactory())
+        viewModel = initViewModel()
         binding.setVariable(viewModelId, viewModel)
         binding.lifecycleOwner = this
         lifecycle.addObserver(viewModel)
@@ -38,10 +35,45 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
 
     override fun onDestroy() {
         super.onDestroy()
-        binding?.let {
-            it.unbind()
-        }
+        binding.unbind()
     }
+
+    /**
+     * 初始化根布局
+     *
+     * @return 布局layout的id
+     */
+    abstract fun initContentView(savedInstanceState: Bundle?): Int
+
+    /**
+     * 初始化ViewModel的id
+     *
+     * @return BR的id
+     */
+    abstract fun initVariableId(): Int
+
+
+    /**
+     * 初始化viewModel
+     *
+     * @return viewModel
+     */
+    abstract fun initViewModel(): VM
+
+    /**
+     * 初始化页面传递的参数
+     */
+    open fun initParam() {}
+
+    /**
+     * 初始化数据
+     */
+    open fun initData() {}
+
+    /**
+     * 初始化页面监听数据
+     */
+    open fun initViewObservable() {}
 
     /**
      * 跳转页面
@@ -67,44 +99,4 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
     }
 
 
-
-    /**
-     * 初始化根布局
-     *
-     * @return 布局layout的id
-     */
-    abstract fun initContentView(savedInstanceState: Bundle?): Int
-
-    /**
-     * 初始化ViewModel的id
-     *
-     * @return BR的id
-     */
-    abstract fun initVariableId(): Int
-
-    /**
-     * 初始化viewModel工厂
-     */
-    abstract fun initFactory(): ViewModelProvider.Factory
-
-    //页面接受的参数方法
-    open fun initParam() {}
-
-    open fun initData() {}
-
-    open fun initViewObservable() {}
-
-
-    /**
-     * 创建viewModel
-     */
-    open fun <VM : ViewModel> createViewModel(factory: ViewModelProvider.Factory): VM {
-        val type = javaClass.genericSuperclass
-        val modelClass = if (type is ParameterizedType) {
-            type.actualTypeArguments[1] as? Class<VM> ?: BaseViewModel::class.java
-        } else {
-            BaseViewModel::class.java
-        }
-        return ViewModelProvider(this, factory)[modelClass] as VM
-    }
 }

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mvvm.mvvmkotlin.binding.command.BindingCommand
 import com.mvvm.mvvmkotlin.util.KotlinThrottle.throttle
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 
 object ViewAdapter {

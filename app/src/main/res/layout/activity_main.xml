@@ -5,18 +5,18 @@
 
     <data>
 
-        <import type="com.mvvm.mvvmtest.MainViewModel" />
+        <import type="com.mvvm.mvvmtest.viewmodel.MainViewModel" />
 
         <variable
             name="viewModel"
-            type="MainViewModel" />
+            type="com.mvvm.mvvmtest.viewmodel.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        tools:context=".MainActivity">
+        tools:context=".ui.MainActivity">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"

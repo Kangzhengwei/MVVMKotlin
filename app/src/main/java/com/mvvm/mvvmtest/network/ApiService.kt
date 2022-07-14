@@ -1,6 +1,7 @@
-package com.mvvm.mvvmtest
+package com.mvvm.mvvmtest.network
 
 import com.mvvm.mvvmkotlin.base.Base
+import com.mvvm.mvvmtest.TokenBean
 import retrofit2.http.POST
 
 interface ApiService {
