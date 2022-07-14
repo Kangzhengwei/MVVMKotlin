@@ -90,7 +90,6 @@ object KotlinThrottle {
     /**
      * Flow实现
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun View.clickEventFlow(): Flow<Unit> {
         var lastClickTime = System.currentTimeMillis()
         return callbackFlow {
@@ -110,7 +109,6 @@ object KotlinThrottle {
     /**
      * Flow实现
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun TextView.textChangeFlow(): Flow<CharSequence> {
         return callbackFlow {
             val watcher = object : TextWatcher {
@@ -141,7 +139,6 @@ object KotlinThrottle {
     /**
      * Flow实现
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun View.throttle(): Flow<Unit> {
         return callbackFlow {
             if (System.currentTimeMillis() - lastClickTime > 1000) {
