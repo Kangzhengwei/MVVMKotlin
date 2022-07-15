@@ -3,25 +3,28 @@ package com.mvvm.mvvmkotlin.binding.adapter.recyclerview
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mvvm.mvvmkotlin.binding.command.BindingCommand
+import com.mvvm.mvvmkotlin.binding.command.BindingConsumer
 import com.mvvm.mvvmkotlin.util.KotlinThrottle.throttle
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 
 object ViewAdapter {
 
+    @JvmStatic
     @BindingAdapter("lineManager")
     fun setLineManager(recyclerView: RecyclerView, lineManagerFactory: LineManagers.LineManagerFactory) {
         recyclerView.addItemDecoration(lineManagerFactory.create(recyclerView))
     }
 
+    @JvmStatic
     @BindingAdapter("layoutManager")
     fun setLayoutManager(recyclerView: RecyclerView, layoutManagerFactory: LayoutManagers.LayoutManagerFactory) {
         recyclerView.layoutManager = layoutManagerFactory.create(recyclerView)
     }
 
+    @JvmStatic
     @BindingAdapter(value = ["onScrollChangeCommand", "onScrollStateChangedCommand"], requireAll = false)
-    fun onScrollChangeCommand(recyclerView: RecyclerView, onScrollChangeCommand: BindingCommand<ScrollDataWrapper>, onScrollStateChangedCommand: BindingCommand<Int>) {
+    fun onScrollChangeCommand(recyclerView: RecyclerView, onScrollChangeCommand: BindingConsumer<ScrollDataWrapper>, onScrollStateChangedCommand: BindingConsumer<Int>) {
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             private var state = 0
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -37,20 +40,22 @@ object ViewAdapter {
         })
     }
 
+    @JvmStatic
     @BindingAdapter("onLoadMoreCommand")
-    fun onLoadMoreCommand(recyclerView: RecyclerView, onLoadMoreCommand: BindingCommand<Int>) {
+    fun onLoadMoreCommand(recyclerView: RecyclerView, onLoadMoreCommand: BindingConsumer<Int>) {
         val listener: RecyclerView.OnScrollListener = OnScrollListener(onLoadMoreCommand)
         recyclerView.addOnScrollListener(listener)
     }
 
+    @JvmStatic
     @BindingAdapter("itemAnimator")
     fun setItemAnimator(recyclerView: RecyclerView, animator: RecyclerView.ItemAnimator) {
         recyclerView.itemAnimator = animator
     }
 
 
-    class OnScrollListener(onLoadMoreCommand: BindingCommand<Int>) : RecyclerView.OnScrollListener() {
-        private val onLoadMoreCommand: BindingCommand<Int>?
+    class OnScrollListener(onLoadMoreCommand: BindingConsumer<Int>) : RecyclerView.OnScrollListener() {
+        private val onLoadMoreCommand: BindingConsumer<Int>?
         private var scope: CoroutineScope? = null
 
         @OptIn(FlowPreview::class)

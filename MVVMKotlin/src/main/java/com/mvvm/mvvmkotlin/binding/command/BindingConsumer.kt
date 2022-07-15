@@ -1,5 +1,18 @@
 package com.mvvm.mvvmkotlin.binding.command
 
-interface BindingConsumer<T> {
-    fun call(t:T)
+class BindingConsumer<T>(execute: ((T) -> Unit)) {
+
+    private var consumer: ((T) -> Unit)? = execute
+
+
+    /**
+     * 执行带泛型参数的命令
+     *
+     * @param parameter 泛型参数
+     */
+    fun execute(parameter: T) {
+        consumer?.invoke(parameter)
+    }
+
+
 }

@@ -9,6 +9,7 @@ import androidx.databinding.ViewDataBinding
 import me.tatarka.bindingcollectionadapter2.ItemBinding
 
 object ViewAdapter {
+    @JvmStatic
     @BindingAdapter("itemView", "observableList")
     fun addViews(viewGroup: ViewGroup, itemBinding: ItemBinding<*>, viewModelList: ObservableList<IBindingItemViewModel<ViewDataBinding>>?) {
         if (viewModelList != null && !viewModelList.isEmpty()) {

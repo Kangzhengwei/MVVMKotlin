@@ -5,6 +5,8 @@ import android.webkit.WebView
 import androidx.databinding.BindingAdapter
 
 object ViewAdapter {
+
+    @JvmStatic
     @BindingAdapter("render")
     fun loadHtml(webView: WebView, html: String?) {
         if (!TextUtils.isEmpty(html)) {

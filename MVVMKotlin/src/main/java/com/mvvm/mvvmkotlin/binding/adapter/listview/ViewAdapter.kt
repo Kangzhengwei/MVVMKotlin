@@ -4,14 +4,16 @@ import android.widget.AbsListView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import androidx.databinding.BindingAdapter
-import com.mvvm.mvvmkotlin.binding.command.BindingCommand
+import com.mvvm.mvvmkotlin.binding.command.BindingConsumer
 import com.mvvm.mvvmkotlin.util.KotlinThrottle.throttle
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.debounce
 
 object ViewAdapter {
+
+    @JvmStatic
     @BindingAdapter(value = ["onScrollChangeCommand", "onScrollStateChangedCommand"], requireAll = false)
-    fun onScrollChangeCommand(listView: ListView, onScrollChangeCommand: BindingCommand<ListViewScrollDataWrapper>?, onScrollStateChangedCommand: BindingCommand<Int>?) {
+    fun onScrollChangeCommand(listView: ListView, onScrollChangeCommand: BindingConsumer<ListViewScrollDataWrapper>?, onScrollStateChangedCommand: BindingConsumer<Int>?) {
         listView.setOnScrollListener(object : AbsListView.OnScrollListener {
             private var scrollState = 0
             override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
@@ -25,19 +27,21 @@ object ViewAdapter {
         })
     }
 
+    @JvmStatic
     @BindingAdapter(value = ["onItemClickCommand"], requireAll = false)
-    fun onItemClickCommand(listView: ListView, onItemClickCommand: BindingCommand<Int?>?) {
+    fun onItemClickCommand(listView: ListView, onItemClickCommand: BindingConsumer<Int?>?) {
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id -> onItemClickCommand?.execute(position) }
     }
 
+    @JvmStatic
     @BindingAdapter("onLoadMoreCommand")
-    fun onLoadMoreCommand(listView: ListView, onLoadMoreCommand: BindingCommand<Int>) {
+    fun onLoadMoreCommand(listView: ListView, onLoadMoreCommand: BindingConsumer<Int>) {
         listView.setOnScrollListener(OnScrollListener(listView, onLoadMoreCommand))
     }
 
 
-    class OnScrollListener(listView: ListView, onLoadMoreCommand: BindingCommand<Int>) : AbsListView.OnScrollListener {
-        private val onLoadMoreCommand: BindingCommand<Int>?
+    class OnScrollListener(listView: ListView, onLoadMoreCommand: BindingConsumer<Int>) : AbsListView.OnScrollListener {
+        private val onLoadMoreCommand: BindingConsumer<Int>?
         private val listView: ListView
         private var scope: CoroutineScope? = null
         override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {}

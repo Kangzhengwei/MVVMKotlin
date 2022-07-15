@@ -6,7 +6,7 @@ import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.databinding.BindingAdapter
-import com.mvvm.mvvmkotlin.binding.command.BindingCommand
+import com.mvvm.mvvmkotlin.binding.command.BindingConsumer
 
 object ViewAdapter {
 
@@ -24,7 +24,7 @@ object ViewAdapter {
 
     @JvmStatic
     @BindingAdapter(value = ["textChanged"], requireAll = false)
-    fun addTextChangedListener(editText: EditText, textChanged: BindingCommand<String>?) {
+    fun addTextChangedListener(editText: EditText, textChanged: BindingConsumer<String>?) {
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(text: CharSequence, i: Int, i1: Int, i2: Int) {

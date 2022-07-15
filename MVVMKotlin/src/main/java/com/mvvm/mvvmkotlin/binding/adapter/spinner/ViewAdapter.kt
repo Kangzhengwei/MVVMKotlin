@@ -7,7 +7,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.databinding.BindingAdapter
-import com.mvvm.mvvmkotlin.binding.command.BindingCommand
+import com.mvvm.mvvmkotlin.binding.command.BindingConsumer
 
 object ViewAdapter {
     /**
@@ -18,8 +18,9 @@ object ViewAdapter {
      * @param valueReply     回显的value
      * @param bindingCommand 条目点击的监听
      */
+    @JvmStatic
     @BindingAdapter(value = ["itemDatas", "valueReply", "resource", "dropDownResource", "onItemSelectedCommand"], requireAll = false)
-    fun onItemSelectedCommand(spinner: Spinner, itemDatas: List<IKeyAndValue>?, valueReply: String, resource: Int, dropDownResource: Int, bindingCommand: BindingCommand<IKeyAndValue>) {
+    fun onItemSelectedCommand(spinner: Spinner, itemDatas: List<IKeyAndValue>?, valueReply: String, resource: Int, dropDownResource: Int, bindingCommand: BindingConsumer<IKeyAndValue>) {
         var resource = resource
         var dropDownResource = dropDownResource
         if (itemDatas == null) {

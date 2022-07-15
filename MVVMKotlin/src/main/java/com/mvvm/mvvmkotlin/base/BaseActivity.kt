@@ -5,6 +5,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.lifecycleScope
+import com.mvvm.mvvmkotlin.base.BaseViewModel.ParameterField.BUNDLE
+import com.mvvm.mvvmkotlin.base.BaseViewModel.ParameterField.CLASS
+import com.mvvm.mvvmkotlin.util.ToastUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompatActivity() {
 
@@ -22,6 +28,7 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
         initData()
         //页面事件监听的方法，一般用于ViewModel层转到View层的事件注册
         initViewObservable()
+        registerLiveEvent()
     }
 
     private fun initViewDataBinding(savedInstanceState: Bundle?) {
@@ -80,7 +87,7 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
      *
      * @param clz 所跳转的目的Activity类
      */
-    open fun startActivity(clz: Class<*>?) {
+    open fun startActivity(clz: Class<*>) {
         startActivity(Intent(this, clz))
     }
 
@@ -90,12 +97,39 @@ abstract class BaseActivity<VB : ViewDataBinding, VM : BaseViewModel> : AppCompa
      * @param clz    所跳转的目的Activity类
      * @param bundle 跳转所携带的信息
      */
-    open fun startActivity(clz: Class<*>?, bundle: Bundle?) {
+    open fun startActivity(clz: Class<*>, bundle: Bundle?) {
         val intent = Intent(this, clz)
-        if (bundle != null) {
-            intent.putExtras(bundle)
+        bundle?.let {
+            intent.putExtras(it)
         }
         startActivity(intent)
+    }
+
+    fun launch(block: suspend CoroutineScope.() -> Unit) = lifecycleScope.launch { block() }
+
+    fun launchCreate(block: suspend CoroutineScope.() -> Unit) =
+        lifecycleScope.launchWhenCreated { block() }
+
+    fun launchResume(block: suspend CoroutineScope.() -> Unit) =
+        lifecycleScope.launchWhenResumed { block() }
+
+    fun showToast(msg: String) {
+        ToastUtil.showToast(this, msg)
+    }
+
+
+    private fun registerLiveEvent() {
+        viewModel.liveEvent.finishEvent.observe(this) {
+            finish()
+        }
+        viewModel.liveEvent.onBackPressedEvent.observe(this) {
+            onBackPressed()
+        }
+        viewModel.liveEvent.startActivityEvent.observe(this) {
+            val clz = it[CLASS] as Class<*>
+            val bundle = it[BUNDLE] as (Bundle)
+            startActivity(clz, bundle)
+        }
     }
 
 

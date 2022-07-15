@@ -3,7 +3,7 @@ package com.mvvm.mvvmkotlin.binding.adapter.switchview
 import android.widget.CompoundButton
 import androidx.appcompat.widget.SwitchCompat
 import androidx.databinding.BindingAdapter
-import com.mvvm.mvvmkotlin.binding.command.BindingCommand
+import com.mvvm.mvvmkotlin.binding.command.BindingConsumer
 
 object ViewAdapter {
     /**
@@ -11,6 +11,7 @@ object ViewAdapter {
      *
      * @param mSwitch Switch控件
      */
+    @JvmStatic
     @BindingAdapter("switchState")
     fun setSwitchState(mSwitch: SwitchCompat, isChecked: Boolean) {
         mSwitch.isChecked = isChecked
@@ -22,8 +23,9 @@ object ViewAdapter {
      * @param mSwitch        Switch控件
      * @param changeListener 事件绑定命令
      */
+    @JvmStatic
     @BindingAdapter("onCheckedChangeCommand")
-    fun onCheckedChangeCommand(mSwitch: SwitchCompat, changeListener: BindingCommand<Boolean?>?) {
+    fun onCheckedChangeCommand(mSwitch: SwitchCompat, changeListener: BindingConsumer<Boolean>?) {
         if (changeListener != null) {
             mSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
                 if (!buttonView.isPressed) {
