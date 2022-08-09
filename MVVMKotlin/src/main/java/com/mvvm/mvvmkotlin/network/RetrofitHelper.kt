@@ -1,5 +1,6 @@
 package com.mvvm.mvvmkotlin.network
 
+import com.mvvm.mvvmkotlin.flowretrofitadapter.FlowCallAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -9,6 +10,7 @@ class RetrofitHelper constructor(baseUrl: String) {
     private var retrofit = Retrofit.Builder()
         .client(OkHttpHelper.instance.getOkHttpClient())
         .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(FlowCallAdapterFactory.create())
         .baseUrl(baseUrl)
         .build()
 

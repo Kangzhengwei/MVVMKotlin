@@ -13,57 +13,57 @@ object ToastUtil {
      * 非连续弹出的Toast
      */
     fun showSingleToast(context: Context, resId: Int) { //R.string.**
-        getSingleToast(context, resId, Toast.LENGTH_SHORT)!!.show()
+        getSingleToast(context, resId, Toast.LENGTH_SHORT)?.show()
     }
 
     fun showSingleToast(context: Context, text: String?) {
-        getSingleToast(context, text, Toast.LENGTH_SHORT)!!.show()
+        getSingleToast(context, text, Toast.LENGTH_SHORT)?.show()
     }
 
     fun showSingleLongToast(context: Context, resId: Int) {
-        getSingleToast(context, resId, Toast.LENGTH_LONG)!!.show()
+        getSingleToast(context, resId, Toast.LENGTH_LONG)?.show()
     }
 
     fun showSingleLongToast(context: Context, text: String?) {
-        getSingleToast(context, text, Toast.LENGTH_LONG)!!.show()
+        getSingleToast(context, text, Toast.LENGTH_LONG)?.show()
     }
 
     /***********************
      * 连续弹出的Toast 位置在中央
      */
     fun showCenterToast(context: Context, resId: Int) {
-        getCenterToast(context, resId, Toast.LENGTH_SHORT)!!.show()
+        getCenterToast(context, resId, Toast.LENGTH_SHORT)?.show()
     }
 
     fun showCenterToast(context: Context, text: String?) {
-        getCenterToast(context, text, Toast.LENGTH_SHORT)!!.show()
+        getCenterToast(context, text, Toast.LENGTH_SHORT)?.show()
     }
 
     fun showCenterLongToast(context: Context, resId: Int) {
-        getCenterToast(context, resId, Toast.LENGTH_LONG)!!.show()
+        getCenterToast(context, resId, Toast.LENGTH_LONG)?.show()
     }
 
     fun showCenterLongToast(context: Context, text: String?) {
-        getCenterToast(context, text, Toast.LENGTH_LONG)!!.show()
+        getCenterToast(context, text, Toast.LENGTH_LONG)?.show()
     }
 
     /**********************
      * 非连续弹出的Toast 位置在中央
      */
     fun showCenterSingleToast(context: Context, resId: Int) { //R.string.**
-        getCenterSingleToast(context, resId, Toast.LENGTH_SHORT)!!.show()
+        getCenterSingleToast(context, resId, Toast.LENGTH_SHORT)?.show()
     }
 
     fun showCenterSingleToast(context: Context, text: String?) {
-        getCenterSingleToast(context, text, Toast.LENGTH_SHORT)!!.show()
+        getCenterSingleToast(context, text, Toast.LENGTH_SHORT)?.show()
     }
 
     fun showCenterSingleLongToast(context: Context, resId: Int) {
-        getCenterSingleToast(context, resId, Toast.LENGTH_LONG)!!.show()
+        getCenterSingleToast(context, resId, Toast.LENGTH_LONG)?.show()
     }
 
     fun showCenterSingleLongToast(context: Context, text: String?) {
-        getCenterSingleToast(context, text, Toast.LENGTH_LONG)!!.show()
+        getCenterSingleToast(context, text, Toast.LENGTH_LONG)?.show()
     }
 
     /***********************
@@ -93,7 +93,7 @@ object ToastUtil {
         if (mToast == null) {
             mToast = Toast.makeText(context, text, duration)
         } else {
-            mToast!!.setText(text)
+            mToast?.setText(text)
         }
         return mToast
     }
@@ -114,9 +114,9 @@ object ToastUtil {
         if (mToast == null) {
             mToast = Toast.makeText(context, text, duration)
         } else {
-            mToast!!.setText(text)
+            mToast?.setText(text)
         }
-        mToast!!.setGravity(Gravity.CENTER, 0, 0)
+        mToast?.setGravity(Gravity.CENTER, 0, 0)
         return mToast
     }
 

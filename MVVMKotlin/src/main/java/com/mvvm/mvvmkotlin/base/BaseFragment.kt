@@ -10,9 +10,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.mvvm.mvvmkotlin.util.ToastUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.lang.reflect.ParameterizedType
 
-abstract class BaseFragment<VB:ViewDataBinding,VM:BaseViewModel>: Fragment() {
+abstract class BaseFragment<VB : ViewDataBinding, VM : BaseViewModel> : Fragment() {
 
     protected lateinit var binding: VB
     protected lateinit var viewModel: VM
@@ -24,7 +28,7 @@ abstract class BaseFragment<VB:ViewDataBinding,VM:BaseViewModel>: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding=DataBindingUtil.inflate(inflater,initContentView(inflater, container, savedInstanceState),container,false)
+        binding = DataBindingUtil.inflate(inflater, initContentView(inflater, container, savedInstanceState), container, false)
         return binding.root
     }
 
@@ -33,22 +37,19 @@ abstract class BaseFragment<VB:ViewDataBinding,VM:BaseViewModel>: Fragment() {
         initViewDataBinding()
         initData()
         initViewObservable()
+        registerLiveEvent()
     }
-
-
 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding?.let {
-            binding.unbind()
-        }
+        binding.unbind()
     }
 
 
-    private fun initViewDataBinding(){
-        viewModelId=initVariableId()
-        viewModel = createViewModel(initFactory())
+    private fun initViewDataBinding() {
+        viewModelId = initVariableId()
+        viewModel = initViewModel()
         binding.setVariable(viewModelId, viewModel)
         binding.lifecycleOwner = this
         lifecycle.addObserver(viewModel)
@@ -72,12 +73,11 @@ abstract class BaseFragment<VB:ViewDataBinding,VM:BaseViewModel>: Fragment() {
      */
     open fun startActivity(clz: Class<*>?, bundle: Bundle?) {
         val intent = Intent(context, clz)
-        if (bundle != null) {
-            intent.putExtras(bundle)
+        bundle?.let {
+            intent.putExtras(it)
         }
         startActivity(intent)
     }
-
 
 
     open fun initParam() {}
@@ -102,22 +102,38 @@ abstract class BaseFragment<VB:ViewDataBinding,VM:BaseViewModel>: Fragment() {
 
 
     /**
-     * 初始化viewModel工厂
+     * 初始化viewModel
+     *
+     * @return viewModel
      */
-    abstract fun initFactory(): ViewModelProvider.Factory
+    abstract fun initViewModel(): VM
 
 
-    /**
-     * 创建viewModel
-     */
-    open fun <VM : ViewModel> createViewModel(factory: ViewModelProvider.Factory): VM {
-        val type = javaClass.genericSuperclass
-        val modelClass = if (type is ParameterizedType) {
-            type.actualTypeArguments[1] as? Class<VM> ?: BaseViewModel::class.java
-        } else {
-            BaseViewModel::class.java
+    fun launch(block: suspend CoroutineScope.() -> Unit) = lifecycleScope.launch { block() }
+
+    fun launchCreate(block: suspend CoroutineScope.() -> Unit) =
+        lifecycleScope.launchWhenCreated { block() }
+
+    fun launchResume(block: suspend CoroutineScope.() -> Unit) =
+        lifecycleScope.launchWhenResumed { block() }
+
+    fun showToast(msg: String) {
+        ToastUtil.showToast(requireContext(), msg)
+    }
+
+
+    private fun registerLiveEvent() {
+        viewModel.liveEvent.finishEvent.observe(viewLifecycleOwner) {
+            requireActivity().finish()
         }
-        return ViewModelProvider(this, factory)[modelClass] as VM
+        viewModel.liveEvent.onBackPressedEvent.observe(viewLifecycleOwner) {
+            requireActivity().onBackPressed()
+        }
+        viewModel.liveEvent.startActivityEvent.observe(viewLifecycleOwner) {
+            val clz = it[BaseViewModel.ParameterField.CLASS] as Class<*>
+            val bundle = it[BaseViewModel.ParameterField.BUNDLE] as (Bundle)
+            startActivity(clz, bundle)
+        }
     }
 
 }

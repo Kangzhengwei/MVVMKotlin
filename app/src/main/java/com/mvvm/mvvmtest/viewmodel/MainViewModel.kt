@@ -23,6 +23,19 @@ class MainViewModel @Inject constructor(private val repository: Repository) : Ba
             }, {
                 showToast(it.msg)
             })
+           /*
+            repository.getAuthor({
+                stateFlow.value = it.authorization
+                postEvent(MessageEvent(it.authorization))
+            }, {
+                showToast(it.msg)
+            })*/
+          /*  repository.getKey({
+                stateFlow.value = it.authorization
+                postEvent(MessageEvent(it.authorization))
+            }, {
+                showToast(it.msg)
+            })*/
         }
     }
 

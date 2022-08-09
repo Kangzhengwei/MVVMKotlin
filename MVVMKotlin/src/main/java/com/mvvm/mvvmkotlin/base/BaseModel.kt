@@ -4,8 +4,7 @@ import com.mvvm.mvvmkotlin.network.ApiException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 
 abstract class BaseModel {
@@ -18,6 +17,25 @@ abstract class BaseModel {
             emit(block())
         }
     }
+
+    fun <T> Flow<Base<T>>.handleResult(): Flow<T> = map {
+        if (it.code == 200) {
+            it.data
+        } else {
+            throw ApiException(it.code, it.msg)
+        }
+    }
+
+    fun <T> Flow<T>.catchException(error: (ApiException) -> Unit): Flow<T> = catch { e ->
+        if (e is ApiException) {
+            error(e)
+        }
+    }
+
+    fun <T> Flow<T>.flowOnIO(): Flow<T> = flowOn(Dispatchers.IO)
+
+    fun <T> Flow<T>.flowOnMain(): Flow<T> = flowOn(Dispatchers.Main)
+
 
     /**
      * 过滤请求结果，其他全抛异常

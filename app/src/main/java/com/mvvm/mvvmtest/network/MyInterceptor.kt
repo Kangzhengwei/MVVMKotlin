@@ -33,11 +33,13 @@ class MyInterceptor : Interceptor {
             val buffer = Buffer()
             val type = it.contentType()
             var json = ""
-            if (type != null && !TextUtils.isEmpty(type.subtype) && type.subtype != "form-data") {
-                it.writeTo(buffer)
-                json = buffer.readString(Charset.defaultCharset())
+            type?.apply { }?.subtype?.apply {
+                if (this != "form-data") {
+                    it.writeTo(buffer)
+                    json = buffer.readString(Charset.defaultCharset())
+                }
             }
-            if (!TextUtils.isEmpty(json)) {
+            if (json.isNotBlank()) {
                 val map: MutableMap<String, String> = GsonUtil.instance.fromJson(json, object : TypeToken<Map<String, String>>() {}.type)
                 map.putAll(header)
                 builder.addHeader("sign", SinUtil.sign(map))

@@ -6,62 +6,63 @@ import java.util.*
 
 class AppManager {
 
+    private val activityStack = Stack<Activity>()
+    private val fragmentStack = Stack<Fragment>()
+
     companion object {
-        private var activityStack = Stack<Activity>()
-        private var fragmentStack = Stack<Fragment>()
-        val instance: com.mvvm.mvvmkotlin.base.AppManager by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            com.mvvm.mvvmkotlin.base.AppManager()
+        val instance: AppManager by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+            AppManager()
         }
+    }
 
-        fun getActivityStack(): Stack<Activity>? {
-            return com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack
-        }
+    fun getActivityStack(): Stack<Activity> {
+        return activityStack
+    }
 
-        fun getFragmentStack(): Stack<Fragment>? {
-            return com.mvvm.mvvmkotlin.base.AppManager.Companion.fragmentStack
-        }
+    fun getFragmentStack(): Stack<Fragment> {
+        return fragmentStack
     }
 
     /**
      * 添加Activity到堆栈
      */
-    fun addActivity(activity: Activity?) {
-        com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.add(activity)
+    fun addActivity(activity: Activity) {
+        activityStack.add(activity)
     }
 
     /**
      * 移除指定的Activity
      */
-    fun removeActivity(activity: Activity?) {
-        com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.remove(activity)
+    fun removeActivity(activity: Activity) {
+        activityStack.remove(activity)
     }
 
     /**
      * 是否有activity
      */
     fun isActivity(): Boolean {
-        return !com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.isEmpty()
+        return !activityStack.isEmpty()
     }
 
     /**
      * 获取当前Activity（堆栈中最后一个压入的）
      */
-    fun currentActivity(): Activity? {
-        return com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.lastElement()
+    fun currentActivity(): Activity {
+        return activityStack.lastElement()
     }
 
     /**
      * 结束当前Activity（堆栈中最后一个压入的）
      */
     fun finishActivity() {
-        val activity = com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.lastElement()
+        val activity = activityStack.lastElement()
         finishActivity(activity)
     }
 
     /**
      * 结束指定的Activity
      */
-    fun finishActivity(activity: Activity?) {
+    fun finishActivity(activity: Activity) {
         activity?.let {
             if (!it.isFinishing) {
                 it.finish()
@@ -73,12 +74,12 @@ class AppManager {
      * 结束所有Activity
      */
     fun finishAllActivity() {
-        for (activity in com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack) {
+        for (activity in activityStack) {
             activity?.let {
                 finishActivity(it)
             }
         }
-        com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.clear()
+        activityStack.clear()
     }
 
     /**
@@ -87,7 +88,7 @@ class AppManager {
      * @author kymjs
      */
     fun getActivity(cls: Class<*>): Activity? {
-        for (activity in com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack) {
+        for (activity in activityStack) {
             if (activity.javaClass == cls) {
                 return activity
             }
@@ -98,29 +99,29 @@ class AppManager {
     /**
      * 添加Fragment到堆栈
      */
-    fun addFragment(fragment: Fragment?) {
-        com.mvvm.mvvmkotlin.base.AppManager.Companion.fragmentStack.add(fragment)
+    fun addFragment(fragment: Fragment) {
+        fragmentStack.add(fragment)
     }
 
     /**
      * 移除指定的Fragment
      */
-    fun removeFragment(fragment: Fragment?) {
-        com.mvvm.mvvmkotlin.base.AppManager.Companion.fragmentStack.remove(fragment)
+    fun removeFragment(fragment: Fragment) {
+        fragmentStack.remove(fragment)
     }
 
     /**
      * 是否有Fragment
      */
     fun isFragment(): Boolean {
-        return !com.mvvm.mvvmkotlin.base.AppManager.Companion.fragmentStack.isEmpty()
+        return !fragmentStack.isEmpty()
     }
 
     /**
      * 获取当前Activity（堆栈中最后一个压入的）
      */
     fun currentFragment(): Fragment? {
-        return com.mvvm.mvvmkotlin.base.AppManager.Companion.fragmentStack.lastElement()
+        return fragmentStack.lastElement()
     }
 
     /**
@@ -137,7 +138,7 @@ class AppManager {
 //            其实android的机制决定了用户无法完全退出应用，当你的application最长时间没有被用过的时候，android自身会决定将application关闭了。
             //System.exit(0);
         } catch (e: Exception) {
-            com.mvvm.mvvmkotlin.base.AppManager.Companion.activityStack.clear()
+            activityStack.clear()
             e.printStackTrace()
         }
     }
